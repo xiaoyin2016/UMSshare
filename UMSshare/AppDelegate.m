@@ -7,6 +7,10 @@
 //
 
 #import "AppDelegate.h"
+#import "UMSocial.h"
+#import "UMSocialQQHandler.h"
+#import "UMSocialSinaSSOHandler.h"
+#import "UMSocialWechatHandler.h"
 
 @interface AppDelegate ()
 
@@ -16,8 +20,62 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    //设置友盟的appKey
+    [UMSocialData setAppKey:@"5747bfa767e58eb98a001860"];
+    
+    [UMSocialSinaSSOHandler openNewSinaSSOWithAppKey:@"1517297772"
+                                              secret:@"73343a84009cc69ae7982247238c05e5"
+     
+                                         RedirectURL:@"http://api.weibo.com/oauth2/default.html"];
+    
+    /*---------------------------qq----------------------------------*/
+    
+    [UMSocialQQHandler setQQWithAppId:@"100424468" appKey:@"c7394704798a158208a74ab60104f0ba" url:@"http://www.umeng.com/social"];
+    
+    [UMSocialQQHandler setSupportWebView:YES];
+    
+    [UMSocialData defaultData].extConfig.qqData.url = @"http://baidu.com";
+    
+    [UMSocialData defaultData].extConfig.qzoneData.url = @"http://baidu.com";
+    
+    [UMSocialData defaultData].extConfig.qqData.title = @"QQ分享title";
+    
+    [UMSocialData defaultData].extConfig.qzoneData.title = @"Qzone分享title";
+    
+    /*---------------------微信----------------------------------*/
+    
+    [UMSocialSinaSSOHandler openNewSinaSSOWithAppKey:@"3921700954"
+                                              secret:@"04b48b094faeb16683c32669824ebdad"
+                                         RedirectURL:@"http://sns.whalecloud.com/sina2/callback"];
+
+    
+    [UMSocialWechatHandler setWXAppId:@"wxd930ea5d5a258f4f" appSecret:@"db426a9829e4b49a0dcac7b4162da6b6" url:@"http://www.umeng.com/social"];
+    
+    [UMSocialData defaultData].extConfig.wechatSessionData.url = @"http://baidu.com";
+    
+    [UMSocialData defaultData].extConfig.wechatTimelineData.url = @"http://baidu.com";
+    
+    [UMSocialData defaultData].extConfig.wechatSessionData.title = @"微信好友title";
+    
+    [UMSocialData defaultData].extConfig.wechatTimelineData.title = @"微信朋友圈title";
+    
+
+    
     return YES;
+}
+
+
+-(BOOL)application:(UIApplication *)application openURL:(nonnull NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(nonnull id)annotation
+{
+    BOOL result = [UMSocialSnsService handleOpenURL:url];
+    
+    if (result  == FALSE){
+        
+        //调用其他的SDK
+    }
+    
+    return result;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
